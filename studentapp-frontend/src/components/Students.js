@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { Container, Paper } from '@mui/material';
@@ -22,10 +22,18 @@ export default function Student() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(student),
-    }).then((response) => {
-      console.log(response);
+    }).then(() => {
+      console.log('Student Added');
     });
   };
+
+  useEffect(() => {
+    fetch('http://localhost:8080/student/getAll')
+      .then((res) => res.json())
+      .then((result) => {
+        setStudents(result);
+      });
+  }, []);
   return (
     <Container>
       <Paper elevation={3} style={paperStyle}>
@@ -60,6 +68,22 @@ export default function Student() {
             Submit
           </Button>
         </Box>
+      </Paper>
+      <Paper elevation={3} style={paperStyle}>
+        {students.map((student) => (
+          <Paper
+            elevation={6}
+            style={{ margin: '10px', padding: '15px', textAlign: 'left' }}
+            key={student.id}
+          >
+            Id:{student.id}
+            <br />
+            Name:{student.name}
+            <br />
+            Address:{student.address}
+            <br />
+          </Paper>
+        ))}
       </Paper>
     </Container>
   );
